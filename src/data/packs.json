@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "language": "en-GB",
+  "packs": [
+    {
+      "id": "classic-food",
+      "name": "Food & drink",
+      "mode": "classic",
+      "words": [
+        "Pizza", "Banana", "Spaghetti", "Chocolate", "Coffee", "Pancake",
+        "Sausage", "Cheese", "Sushi", "Curry", "Toast", "Popcorn",
+        "Lemonade", "Strawberry", "Porridge", "Roast dinner", "Ice cream",
+        "Doughnut", "Crisps", "Baked beans", "Mango", "Omelette", "Custard",
+        "Biscuit", "Smoothie", "Burger", "Noodles", "Yoghurt", "Pickle", "Honey"
+      ]
+    },
+    {
+      "id": "classic-animals",
+      "name": "Animals",
+      "mode": "classic",
+      "words": [
+        "Elephant", "Penguin", "Dolphin", "Tiger", "Kangaroo", "Hedgehog",
+        "Octopus", "Giraffe", "Crocodile", "Owl", "Squirrel", "Panda",
+        "Flamingo", "Bat", "Koala", "Jellyfish", "Rhinoceros", "Chameleon",
+        "Otter", "Hamster", "Peacock", "Wolf", "Camel", "Snail", "Seahorse",
+        "Badger", "Parrot", "Sloth", "Lobster", "Frog"
+      ]
+    },
+    {
+      "id": "classic-football",
+      "name": "Football",
+      "mode": "classic",
+      "words": [
+        "Penalty", "Goalkeeper", "Offside", "Corner", "Referee", "Wembley",
+        "Hat-trick", "Free kick", "Header", "Striker", "Whistle", "Dribble",
+        "Tackle", "Half-time", "Stadium", "Manager", "Substitute", "Captain",
+        "Trophy", "Kit", "Pitch", "Yellow card", "Extra time", "Crossbar",
+        "Winger", "Derby", "Fixture", "Transfer", "Chant", "Boots"
+      ]
+    },
+    {
+      "id": "classic-house",
+      "name": "Around the house",
+      "mode": "classic",
+      "words": [
+        "Kettle", "Sofa", "Mirror", "Cushion", "Wardrobe", "Toaster",
+        "Curtain", "Doorbell", "Radiator", "Staircase", "Bathtub", "Fridge",
+        "Blanket", "Lamp", "Hoover", "Bookshelf", "Fireplace", "Bin",
+        "Doormat", "Pillow", "Loft", "Hallway", "Duvet", "Coaster",
+        "Umbrella", "Clock", "Washing machine", "Plughole", "Bannister", "Wellies"
+      ]
+    },
+    {
+      "id": "classic-travel",
+      "name": "Travel & holidays",
+      "mode": "classic",
+      "words": [
+        "Airport", "Beach", "Passport", "Suitcase", "Hotel", "Sunburn",
+        "Postcard", "Souvenir", "Campsite", "Ferry", "Map", "Sunglasses",
+        "Boarding pass", "Seaside", "Caravan", "Snorkel", "Cruise",
+        "Deckchair", "Rucksack", "Guidebook", "Duty-free", "Jet lag", "Tent",
+        "Compass", "Lighthouse", "Coach", "Harbour", "Flip-flops",
+        "Roundabout", "Motorway"
+      ]
+    },
+    {
+      "id": "classic-films",
+      "name": "Films & telly",
+      "mode": "classic",
+      "words": [
+        "Popcorn", "Director", "Oscar", "Sequel", "Cinema", "Trailer",
+        "Villain", "Cliffhanger", "Subtitles", "Boxset", "Remote", "Cartoon",
+        "Documentary", "Soap opera", "Plot twist", "Credits", "Blockbuster",
+        "Screenplay", "Superhero", "Interval", "Ticket", "Usher", "Premiere",
+        "Stunt", "Soundtrack", "Sitcom", "Binge", "Spoiler", "Episode", "Screen"
+      ]
+    },
+    {
+      "id": "classic-school",
+      "name": "School & uni",
+      "mode": "classic",
+      "words": [
+        "Exam", "Lecture", "Library", "Homework", "Timetable", "Uniform",
+        "Detention", "Assembly", "Whiteboard", "Playground", "Textbook",
+        "Register", "Canteen", "Revision", "Deadline", "Seminar",
+        "Graduation", "Ruler", "Highlighter", "Calculator", "Report card",
+        "Field trip", "Prefect", "Term", "Coursework", "Protractor", "Locker",
+        "Bell", "Sports day", "Rubber"
+      ]
+    },
+    {
+      "id": "classic-nature",
+      "name": "Nature & weather",
+      "mode": "classic",
+      "words": [
+        "Thunder", "Rainbow", "Glacier", "Desert", "Volcano", "Waterfall",
+        "Blizzard", "Puddle", "Sunrise", "Forest", "Mountain", "Fog",
+        "Lightning", "Meadow", "Iceberg", "Drizzle", "Cave", "Canyon",
+        "Frost", "Breeze", "Marsh", "Dune", "Tornado", "Hailstone",
+        "Riverbank", "Cliff", "Moss", "Heatwave", "Snowflake", "Tide"
+      ]
+    },
+    {
+      "id": "question-general",
+      "name": "General",
+      "mode": "question",
+      "pairs": [
+        { "real": "Greatest footballer of all time?", "decoy": "Name a footballer." },
+        { "real": "Most beautiful city you've visited?", "decoy": "Name a city." },
+        { "real": "Best film ever made?", "decoy": "Name a film." },
+        { "real": "Scariest animal?", "decoy": "Name an animal." },
+        { "real": "Most overrated food?", "decoy": "Name a food." },
+        { "real": "Best country for a holiday?", "decoy": "Name a country." },
+        { "real": "Most annoying household chore?", "decoy": "Name a household chore." },
+        { "real": "Greatest musician of all time?", "decoy": "Name a musician." },
+        { "real": "Most useless invention?", "decoy": "Name an invention." },
+        { "real": "Best pizza topping?", "decoy": "Name a pizza topping." },
+        { "real": "Most embarrassing fashion trend?", "decoy": "Name an item of clothing." },
+        { "real": "Worst subject at school?", "decoy": "Name a school subject." },
+        { "real": "Most dangerous job?", "decoy": "Name a job." },
+        { "real": "Best superhero?", "decoy": "Name a superhero." },
+        { "real": "Most relaxing place to be?", "decoy": "Name a place." },
+        { "real": "Best board game?", "decoy": "Name a game." },
+        { "real": "Tastiest fruit?", "decoy": "Name a fruit." },
+        { "real": "Most iconic landmark in the world?", "decoy": "Name a landmark." },
+        { "real": "Best day of the week?", "decoy": "Name a day of the week." },
+        { "real": "Most overrated tourist attraction?", "decoy": "Name a tourist attraction." },
+        { "real": "Coolest pet to own?", "decoy": "Name a pet." },
+        { "real": "Best ice cream flavour?", "decoy": "Name a flavour." },
+        { "real": "Most stressful situation?", "decoy": "Name a situation." },
+        { "real": "Greatest sports team ever?", "decoy": "Name a sports team." },
+        { "real": "Best season of the year?", "decoy": "Name a season." },
+        { "real": "Most useful app on your phone?", "decoy": "Name an app." },
+        { "real": "Worst smell?", "decoy": "Name a smell." },
+        { "real": "Best drink on a hot day?", "decoy": "Name a drink." },
+        { "real": "Best takeaway?", "decoy": "Name a type of takeaway." },
+        { "real": "Best biscuit to dunk in tea?", "decoy": "Name a biscuit." },
+        { "real": "Most overrated celebrity?", "decoy": "Name a celebrity." },
+        { "real": "Best cartoon character?", "decoy": "Name a cartoon character." },
+        { "real": "Most satisfying sound?", "decoy": "Name a sound." },
+        { "real": "Best flavour of crisps?", "decoy": "Name a flavour of crisps." },
+        { "real": "Most terrifying natural disaster?", "decoy": "Name a type of weather." },
+        { "real": "Coolest profession?", "decoy": "Name a profession." },
+        { "real": "Best colour?", "decoy": "Name a colour." },
+        { "real": "Most beautiful place in the UK?", "decoy": "Name a UK city." },
+        { "real": "Best song to sing in the shower?", "decoy": "Name a song." },
+        { "real": "Most impressive animal?", "decoy": "Name an animal." }
+      ]
+    }
+  ]
+}

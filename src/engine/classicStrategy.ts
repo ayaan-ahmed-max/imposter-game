@@ -2,12 +2,17 @@ import type { ClassicPack } from '../data/packTypes';
 import type { ClassicAssignConfig, ClassicHiddenCard, Player } from './types';
 import { shuffle } from './shuffle';
 
+export interface AssignClassicResult {
+  selectedWord: string;
+  hiddenCards: Record<string, ClassicHiddenCard>;
+}
+
 export function assignClassic(
   players: Player[],
   pack: ClassicPack,
   config: ClassicAssignConfig,
   rng: () => number = Math.random
-): Record<string, ClassicHiddenCard> {
+): AssignClassicResult {
   if (players.length < 3) {
     throw new Error('Classic mode requires at least 3 players');
   }
@@ -18,7 +23,7 @@ export function assignClassic(
     throw new Error('Pack has no words to select from');
   }
 
-  const word = pack.words[Math.floor(rng() * pack.words.length)];
+  const selectedWord = pack.words[Math.floor(rng() * pack.words.length)];
   const shuffled = shuffle(players, rng);
   const impostorIds = new Set(shuffled.slice(0, config.impostorCount).map((p) => p.id));
 
@@ -28,8 +33,8 @@ export function assignClassic(
     hiddenCards[player.id] = {
       mode: 'classic',
       role: isImpostor ? 'impostor' : 'civilian',
-      display: isImpostor ? 'Impostor' : word,
+      display: isImpostor ? 'Impostor' : selectedWord,
     };
   }
-  return hiddenCards;
+  return { selectedWord, hiddenCards };
 }

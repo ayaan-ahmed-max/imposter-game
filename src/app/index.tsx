@@ -1,103 +1,41 @@
-// Throwaway theme QA screen — not a real app screen. Shows every colour
-// token and both loaded font families so the palette/type can be eyeballed
-// before any real screens are built. Delete once real screens exist.
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, router } from 'expo-router';
 
 import { theme } from '@/theme';
-import type { ColorToken } from '@/theme';
 
-const SWATCH_NOTES: Partial<Record<ColorToken, string>> = {
-  oxblood: 'impostor-reveal only',
-};
+// /setup, /settings, /about don't exist yet (future stages) — Expo Router's
+// typedRoutes would reject these strings at compile time, so they're cast
+// until those routes land. Tapping through currently hits +not-found.
+const SETUP_HREF = '/setup' as any;
+const SETTINGS_HREF = '/settings' as any;
+const ABOUT_HREF = '/about' as any;
 
-const swatchOrder: ColorToken[] = [
-  'canvas',
-  'card',
-  'sunken',
-  'ink',
-  'muted',
-  'hairline',
-  'terracotta',
-  'terracottaPressed',
-  'terracottaTint',
-  'moss',
-  'ochre',
-  'oxblood',
-];
-
-export default function ThemeDemoScreen() {
+export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.heading}>Theme demo</Text>
-        <Text style={styles.subheading}>Colour tokens</Text>
-        {swatchOrder.map((token) => (
-          <View key={token} style={styles.swatchRow}>
-            <View
-              style={[
-                styles.swatchBlock,
-                { backgroundColor: theme.colors[token] },
-              ]}
-            />
-            <View style={styles.swatchLabel}>
-              <Text style={styles.swatchName}>{token}</Text>
-              <Text style={styles.swatchHex}>{theme.colors[token]}</Text>
-              {SWATCH_NOTES[token] && (
-                <Text style={styles.swatchNote}>{SWATCH_NOTES[token]}</Text>
-              )}
-            </View>
-          </View>
-        ))}
+      <View style={styles.content}>
+        <Text style={styles.title}>Imposter</Text>
 
-        <Text style={styles.subheading}>Typography — serif (Fraunces)</Text>
-        <Text
-          style={[
-            styles.sample,
-            {
-              fontFamily: theme.fontFamily.serifBold,
-              fontSize: theme.fontSize.xxl,
-            },
+        <Pressable
+          style={({ pressed }) => [
+            styles.playButton,
+            pressed && styles.playButtonPressed,
           ]}
+          onPress={() => router.push(SETUP_HREF)}
         >
-          Who is the impostor?
-        </Text>
-        <Text
-          style={[
-            styles.sample,
-            {
-              fontFamily: theme.fontFamily.serif,
-              fontSize: theme.fontSize.lg,
-            },
-          ]}
-        >
-          A round of deduction and doubt.
-        </Text>
+          <Text style={styles.playButtonLabel}>Play</Text>
+        </Pressable>
 
-        <Text style={styles.subheading}>Typography — sans (Inter)</Text>
-        <Text
-          style={[
-            styles.sample,
-            {
-              fontFamily: theme.fontFamily.sansMedium,
-              fontSize: theme.fontSize.base,
-            },
-          ]}
-        >
-          Pass the device to the next player.
-        </Text>
-        <Text
-          style={[
-            styles.sample,
-            {
-              fontFamily: theme.fontFamily.sans,
-              fontSize: theme.fontSize.sm,
-            },
-          ]}
-        >
-          Tap to reveal your role, then pass discreetly.
-        </Text>
-      </ScrollView>
+        <View style={styles.secondaryLinks}>
+          <Link href={SETTINGS_HREF} style={styles.secondaryLink}>
+            Settings
+          </Link>
+          <Link href={ABOUT_HREF} style={styles.secondaryLink}>
+            About
+          </Link>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -108,57 +46,38 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.canvas,
   },
   content: {
-    padding: 20,
-    gap: 8,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 40,
+    paddingHorizontal: 24,
   },
-  heading: {
+  title: {
     fontFamily: theme.fontFamily.serifBold,
     fontSize: theme.fontSize.xxl,
     color: theme.colors.ink,
-    marginBottom: 8,
   },
-  subheading: {
+  playButton: {
+    backgroundColor: theme.colors.terracotta,
+    paddingVertical: 16,
+    paddingHorizontal: 48,
+    borderRadius: 12,
+  },
+  playButtonPressed: {
+    backgroundColor: theme.colors.terracottaPressed,
+  },
+  playButtonLabel: {
     fontFamily: theme.fontFamily.sansSemiBold,
     fontSize: theme.fontSize.lg,
-    color: theme.colors.ink,
-    marginTop: 20,
-    marginBottom: 8,
+    color: theme.colors.card,
   },
-  swatchRow: {
+  secondaryLinks: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 6,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors.hairline,
+    gap: 24,
   },
-  swatchBlock: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.hairline,
-  },
-  swatchLabel: {
-    flex: 1,
-  },
-  swatchName: {
-    fontFamily: theme.fontFamily.sansMedium,
-    fontSize: theme.fontSize.base,
-    color: theme.colors.ink,
-  },
-  swatchHex: {
+  secondaryLink: {
     fontFamily: theme.fontFamily.sans,
     fontSize: theme.fontSize.sm,
     color: theme.colors.muted,
-  },
-  swatchNote: {
-    fontFamily: theme.fontFamily.sans,
-    fontSize: theme.fontSize.xs,
-    color: theme.colors.oxblood,
-  },
-  sample: {
-    color: theme.colors.ink,
-    marginBottom: 4,
   },
 });

@@ -34,6 +34,29 @@ export function isValidPack(p: any): p is Pack {
   return false;
 }
 
+function packFieldErrors(p: any, label: string): string[] {
+  const errors: string[] = [];
+  if (!isNonEmptyString(p.id)) errors.push(`pack "${label}": id must be a non-empty string`);
+  if (!isNonEmptyString(p.name)) errors.push(`pack "${label}": name must be a non-empty string`);
+
+  if (p.mode === 'classic') {
+    if (!Array.isArray(p.words) || p.words.length === 0 || !p.words.every(isNonEmptyString)) {
+      errors.push(`pack "${label}": words must be a non-empty array of non-empty strings`);
+    }
+  } else {
+    if (!Array.isArray(p.pairs) || p.pairs.length === 0) {
+      errors.push(`pack "${label}": pairs must be a non-empty array`);
+    } else {
+      p.pairs.forEach((pair: any, i: number) => {
+        if (!isNonEmptyString(pair?.real) || !isNonEmptyString(pair?.decoy)) {
+          errors.push(`pack "${label}": pairs[${i}] must have non-empty real and decoy strings`);
+        }
+      });
+    }
+  }
+  return errors;
+}
+
 /**
  * Validates the whole packs file shape, collecting every error in one pass
  * (not just the first) so a bad packs.json edit surfaces everything at once.
@@ -57,8 +80,9 @@ export function validatePacksFile(raw: unknown): PacksFile {
         errors.push(`pack "${label}": mode must be "classic" or "question"`);
         return;
       }
-      if (!isValidPack(p)) {
-        errors.push(`pack "${label}": does not match required shape for mode "${p.mode}"`);
+      const fieldErrors = packFieldErrors(p, label);
+      if (fieldErrors.length > 0) {
+        errors.push(...fieldErrors);
         return;
       }
       if (seenIds.has(p.id)) errors.push(`pack "${label}": duplicate id`);

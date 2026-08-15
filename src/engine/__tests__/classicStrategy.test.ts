@@ -1,5 +1,5 @@
 import { assignClassic } from '../classicStrategy';
-import { makeTestRng } from './testRng';
+import { makeTestRng } from '../testRng';
 import type { ClassicPack } from '../../data/packTypes';
 import type { Player } from '../types';
 

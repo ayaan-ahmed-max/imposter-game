@@ -1,5 +1,5 @@
 import { assignQuestion } from '../questionStrategy';
-import { makeTestRng } from './testRng';
+import { makeTestRng } from '../testRng';
 import type { QuestionPack } from '../../data/packTypes';
 import type { Player } from '../types';
 

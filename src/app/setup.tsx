@@ -1,11 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 import { theme } from '@/theme';
-import type { GameMode } from '@/engine';
+import type { GameMode, Player } from '@/engine';
 import { getPacksByMode } from '@/data/loadPacks';
+import { useRoundStore } from '@/store/roundStore';
 import { Stepper } from '@/components/Stepper';
+
+// /reveal doesn't exist yet (next stage) — same typedRoutes workaround as
+// the Home screen's Setup/Settings/About links.
+const REVEAL_HREF = '/reveal' as any;
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 12;
@@ -57,6 +63,29 @@ export default function SetupScreen() {
       setSelectedPackId(packs[0]?.id ?? null);
     }
   }, [mode, packs, selectedPackId]);
+
+  const startRound = useRoundStore((s) => s.startRound);
+  const selectedPack = packs.find((p) => p.id === selectedPackId) ?? null;
+  const canStart = mode === 'mafia' ? true : selectedPack !== null;
+
+  function handleStartRound() {
+    const players: Player[] = Array.from({ length: playerCount }, (_, i) => ({
+      id: `player-${i}`,
+      name: `Player ${i + 1}`,
+      seat: i,
+    }));
+
+    if (selectedPack?.mode === 'classic') {
+      startRound({ mode: 'classic', players, pack: selectedPack, config: { impostorCount } });
+    } else if (selectedPack?.mode === 'question') {
+      startRound({ mode: 'question', players, pack: selectedPack, config: { impostorCount } });
+    } else if (mode === 'mafia') {
+      startRound({ mode: 'mafia', players, config: { mafiaCount, doctorCount } });
+    } else {
+      return;
+    }
+    router.push(REVEAL_HREF);
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -138,6 +167,14 @@ export default function SetupScreen() {
             />
           </View>
         )}
+
+        <Pressable
+          disabled={!canStart}
+          onPress={handleStartRound}
+          style={[styles.startButton, !canStart && styles.startButtonDisabled]}
+        >
+          <Text style={styles.startButtonLabel}>Start round</Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -207,5 +244,20 @@ const styles = StyleSheet.create({
   packNameActive: {
     fontFamily: theme.fontFamily.sansSemiBold,
     color: theme.colors.terracottaPressed,
+  },
+  startButton: {
+    backgroundColor: theme.colors.terracotta,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  startButtonDisabled: {
+    opacity: 0.4,
+  },
+  startButtonLabel: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.card,
   },
 });

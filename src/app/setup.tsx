@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { theme } from '@/theme';
 import type { GameMode } from '@/engine';
+import { getPacksByMode } from '@/data/loadPacks';
 import { Stepper } from '@/components/Stepper';
 
 const MIN_PLAYERS = 3;
@@ -18,6 +19,22 @@ const MODE_LABELS: Record<GameMode, string> = {
 export default function SetupScreen() {
   const [playerCount, setPlayerCount] = useState(4);
   const [mode, setMode] = useState<GameMode>('classic');
+  const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
+
+  const packs = useMemo(
+    () => (mode === 'mafia' ? [] : getPacksByMode(mode)),
+    [mode]
+  );
+
+  useEffect(() => {
+    if (mode === 'mafia') {
+      setSelectedPackId(null);
+      return;
+    }
+    if (!packs.some((p) => p.id === selectedPackId)) {
+      setSelectedPackId(packs[0]?.id ?? null);
+    }
+  }, [mode, packs, selectedPackId]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -43,6 +60,31 @@ export default function SetupScreen() {
             </Text>
           ))}
         </View>
+
+        {mode !== 'mafia' && (
+          <View style={styles.packList}>
+            <Text style={styles.sectionLabel}>Pack</Text>
+            {packs.map((pack) => (
+              <Pressable
+                key={pack.id}
+                onPress={() => setSelectedPackId(pack.id)}
+                style={[
+                  styles.packRow,
+                  pack.id === selectedPackId && styles.packRowActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.packName,
+                    pack.id === selectedPackId && styles.packNameActive,
+                  ]}
+                >
+                  {pack.name}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -82,5 +124,35 @@ const styles = StyleSheet.create({
   modeOptionActive: {
     backgroundColor: theme.colors.card,
     color: theme.colors.ink,
+  },
+  sectionLabel: {
+    fontFamily: theme.fontFamily.sansMedium,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.muted,
+    marginTop: 8,
+  },
+  packList: {
+    gap: 8,
+  },
+  packRow: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.hairline,
+    backgroundColor: theme.colors.card,
+  },
+  packRowActive: {
+    borderColor: theme.colors.terracotta,
+    backgroundColor: theme.colors.terracottaTint,
+  },
+  packName: {
+    fontFamily: theme.fontFamily.sans,
+    fontSize: theme.fontSize.base,
+    color: theme.colors.ink,
+  },
+  packNameActive: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    color: theme.colors.terracottaPressed,
   },
 });

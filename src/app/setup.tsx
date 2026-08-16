@@ -9,6 +9,7 @@ import { Stepper } from '@/components/Stepper';
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 12;
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 const MODES: GameMode[] = ['classic', 'question', 'mafia'];
 const MODE_LABELS: Record<GameMode, string> = {
   classic: 'Classic',
@@ -20,6 +21,27 @@ export default function SetupScreen() {
   const [playerCount, setPlayerCount] = useState(4);
   const [mode, setMode] = useState<GameMode>('classic');
   const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
+  const [impostorCount, setImpostorCount] = useState(1);
+  const [mafiaCount, setMafiaCount] = useState(1);
+  const [doctorCount, setDoctorCount] = useState(0);
+
+  // Live guardrail validation: bounds move with playerCount, so clamp
+  // whenever it shrinks below the current selection rather than only at
+  // submit time. mafiaCount is clamped first, then doctorCount against
+  // whatever mafiaCount now is — clamping them independently could leave
+  // mafiaCount + doctorCount over the limit even though each looks valid
+  // on its own.
+  useEffect(() => {
+    setImpostorCount((prev) => clamp(prev, 1, playerCount - 1));
+    setMafiaCount((prevMafia) => {
+      const nextMafia = clamp(prevMafia, 1, playerCount - 1);
+      setDoctorCount((prevDoctor) => clamp(prevDoctor, 0, playerCount - 1 - nextMafia));
+      return nextMafia;
+    });
+  }, [playerCount]);
+
+  const mafiaMax = Math.max(1, playerCount - 1 - doctorCount);
+  const doctorMax = Math.max(0, playerCount - 1 - mafiaCount);
 
   const packs = useMemo(
     () => (mode === 'mafia' ? [] : getPacksByMode(mode)),
@@ -83,6 +105,37 @@ export default function SetupScreen() {
                 </Text>
               </Pressable>
             ))}
+          </View>
+        )}
+
+        {mode === 'mafia' ? (
+          <View>
+            <Text style={styles.sectionLabel}>Counts</Text>
+            <Stepper
+              label="Mafia"
+              value={mafiaCount}
+              min={1}
+              max={mafiaMax}
+              onChange={setMafiaCount}
+            />
+            <Stepper
+              label="Doctors"
+              value={doctorCount}
+              min={0}
+              max={doctorMax}
+              onChange={setDoctorCount}
+            />
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.sectionLabel}>Counts</Text>
+            <Stepper
+              label="Impostors"
+              value={impostorCount}
+              min={1}
+              max={Math.max(1, playerCount - 1)}
+              onChange={setImpostorCount}
+            />
           </View>
         )}
       </ScrollView>

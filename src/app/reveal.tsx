@@ -42,10 +42,40 @@ export default function RevealScreen() {
   const player = players[seatIndex];
   const card = player ? round.hiddenCards[player.id] : null;
 
+  function handleReveal() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    setPhase('revealed');
+    Animated.timing(flip, {
+      toValue: 1,
+      duration: FLIP_UP_MS,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  function handleHide() {
+    Animated.timing(flip, {
+      toValue: 0,
+      duration: FLIP_DOWN_MS,
+      useNativeDriver: true,
+    }).start(() => {
+      setPhase('facedown');
+      setSeatIndex((i) => i + 1);
+    });
+  }
+
   function handleContinue() {
     advancePhase();
     router.replace(IN_ROUND_HREF);
   }
+
+  const frontRotate = flip.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+  const backRotate = flip.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['180deg', '360deg'],
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -66,11 +96,47 @@ export default function RevealScreen() {
           <Text style={styles.passHint}>
             {phase === 'facedown' ? 'Tap the card to reveal' : 'Tap to hide and pass on'}
           </Text>
+
+          <Pressable
+            onPress={phase === 'facedown' ? handleReveal : handleHide}
+            style={styles.cardTouchable}
+          >
+            <Animated.View
+              style={[
+                styles.cardFace,
+                styles.cardBack,
+                { transform: [{ perspective: 1200 }, { rotateY: frontRotate }] },
+              ]}
+            >
+              <View style={styles.cardBackMark} />
+              <Text style={styles.cardBackLabel}>IMPOSTER</Text>
+            </Animated.View>
+            <Animated.View
+              style={[
+                styles.cardFace,
+                styles.cardFront,
+                card && isImpostorCard(card) ? styles.cardFrontImpostor : styles.cardFrontCalm,
+                { transform: [{ perspective: 1200 }, { rotateY: backRotate }] },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.cardFrontLabel,
+                  card && isImpostorCard(card) ? styles.cardFrontLabelImpostor : styles.cardFrontLabelCalm,
+                ]}
+              >
+                {card?.display}
+              </Text>
+            </Animated.View>
+          </Pressable>
         </View>
       )}
     </SafeAreaView>
   );
 }
+
+const CARD_WIDTH = 280;
+const CARD_HEIGHT = 380;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -95,6 +161,59 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     color: theme.colors.muted,
     marginBottom: 20,
+  },
+  cardTouchable: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+  },
+  cardFace: {
+    position: 'absolute',
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backfaceVisibility: 'hidden',
+    padding: 24,
+  },
+  cardBack: {
+    backgroundColor: theme.colors.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.hairline,
+    gap: 16,
+  },
+  cardBackMark: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: theme.colors.terracottaTint,
+  },
+  cardBackLabel: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    fontSize: theme.fontSize.sm,
+    letterSpacing: 3,
+    color: theme.colors.muted,
+  },
+  cardFront: {},
+  cardFrontCalm: {
+    backgroundColor: theme.colors.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.hairline,
+  },
+  cardFrontImpostor: {
+    backgroundColor: theme.colors.oxblood,
+  },
+  cardFrontLabel: {
+    fontFamily: theme.fontFamily.serifBold,
+    fontSize: theme.fontSize.xl,
+    textAlign: 'center',
+  },
+  cardFrontLabelCalm: {
+    color: theme.colors.ink,
+  },
+  cardFrontLabelImpostor: {
+    color: theme.colors.card,
   },
   doneHeading: {
     fontFamily: theme.fontFamily.serifBold,

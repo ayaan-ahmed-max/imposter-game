@@ -42,9 +42,32 @@ export default function RevealScreen() {
   const player = players[seatIndex];
   const card = player ? round.hiddenCards[player.id] : null;
 
+  function handleContinue() {
+    advancePhase();
+    router.replace(IN_ROUND_HREF);
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.center} />
+      {done ? (
+        <View style={styles.center}>
+          <Text style={styles.doneHeading}>Everyone's seen their card</Text>
+          <Text style={styles.doneSub}>Time to start the round.</Text>
+          <Pressable
+            onPress={handleContinue}
+            style={({ pressed }) => [styles.continueButton, pressed && styles.continueButtonPressed]}
+          >
+            <Text style={styles.continueButtonLabel}>Continue</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.center}>
+          <Text style={styles.passHeading}>Pass to {player.name}</Text>
+          <Text style={styles.passHint}>
+            {phase === 'facedown' ? 'Tap the card to reveal' : 'Tap to hide and pass on'}
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -60,5 +83,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
     gap: 12,
+  },
+  passHeading: {
+    fontFamily: theme.fontFamily.serifBold,
+    fontSize: theme.fontSize.xl,
+    color: theme.colors.ink,
+    textAlign: 'center',
+  },
+  passHint: {
+    fontFamily: theme.fontFamily.sans,
+    fontSize: theme.fontSize.sm,
+    color: theme.colors.muted,
+    marginBottom: 20,
+  },
+  doneHeading: {
+    fontFamily: theme.fontFamily.serifBold,
+    fontSize: theme.fontSize.xl,
+    color: theme.colors.ink,
+    textAlign: 'center',
+  },
+  doneSub: {
+    fontFamily: theme.fontFamily.sans,
+    fontSize: theme.fontSize.base,
+    color: theme.colors.muted,
+    marginBottom: 20,
+  },
+  continueButton: {
+    backgroundColor: theme.colors.terracotta,
+    paddingVertical: 16,
+    paddingHorizontal: 48,
+    borderRadius: 12,
+  },
+  continueButtonPressed: {
+    backgroundColor: theme.colors.terracottaPressed,
+  },
+  continueButtonLabel: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.card,
   },
 });

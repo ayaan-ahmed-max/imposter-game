@@ -129,6 +129,12 @@ export default function RevealScreen() {
               </Text>
             </Animated.View>
           </Pressable>
+
+          <View style={styles.dots}>
+            {players.map((p, i) => (
+              <View key={p.id} style={[styles.dot, i < seatIndex && styles.dotSeen]} />
+            ))}
+          </View>
         </View>
       )}
     </SafeAreaView>
@@ -214,6 +220,20 @@ const styles = StyleSheet.create({
   },
   cardFrontLabelImpostor: {
     color: theme.colors.card,
+  },
+  dots: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 28,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.hairline,
+  },
+  dotSeen: {
+    backgroundColor: theme.colors.terracotta,
   },
   doneHeading: {
     fontFamily: theme.fontFamily.serifBold,

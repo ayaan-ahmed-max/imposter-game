@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
@@ -8,6 +8,8 @@ import { useRoundStore } from '@/store/roundStore';
 
 export default function RoundEndScreen() {
   const round = useRoundStore((s) => s.round);
+  const startRound = useRoundStore((s) => s.startRound);
+  const resetRound = useRoundStore((s) => s.resetRound);
 
   useEffect(() => {
     if (!round) {
@@ -22,6 +24,25 @@ export default function RoundEndScreen() {
   const players = [...round.players].sort((a, b) => a.seat - b.seat);
   const impostors = players.filter((p) => round.hiddenCards[p.id].role === 'impostor');
   const impostorLabel = impostors.length > 1 ? 'The impostors were' : 'The impostor was';
+
+  function handleNextRound() {
+    if (!round) {
+      return;
+    }
+    if (round.mode === 'classic') {
+      startRound({ mode: 'classic', players: round.players, pack: round.selectedPack, config: round.config });
+    } else if (round.mode === 'question') {
+      startRound({ mode: 'question', players: round.players, pack: round.selectedPack, config: round.config });
+    } else {
+      startRound({ mode: 'mafia', players: round.players, config: round.config });
+    }
+    router.replace('/reveal' as any);
+  }
+
+  function handleBackToSetup() {
+    resetRound();
+    router.replace('/setup' as any);
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -53,6 +74,21 @@ export default function RoundEndScreen() {
             </View>
           </>
         )}
+
+        <View style={styles.actions}>
+          <Pressable
+            onPress={handleNextRound}
+            style={({ pressed }) => [styles.primaryButton, pressed && styles.primaryButtonPressed]}
+          >
+            <Text style={styles.primaryButtonLabel}>Next round</Text>
+          </Pressable>
+          <Pressable
+            onPress={handleBackToSetup}
+            style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+          >
+            <Text style={styles.secondaryButtonLabel}>Back to setup</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -114,5 +150,37 @@ const styles = StyleSheet.create({
     fontFamily: theme.fontFamily.sansSemiBold,
     fontSize: theme.fontSize.base,
     color: theme.colors.terracottaPressed,
+  },
+  actions: {
+    gap: 12,
+    marginTop: 16,
+  },
+  primaryButton: {
+    backgroundColor: theme.colors.terracotta,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  primaryButtonPressed: {
+    backgroundColor: theme.colors.terracottaPressed,
+  },
+  primaryButtonLabel: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.card,
+  },
+  secondaryButton: {
+    backgroundColor: theme.colors.sunken,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  secondaryButtonPressed: {
+    backgroundColor: theme.colors.hairline,
+  },
+  secondaryButtonLabel: {
+    fontFamily: theme.fontFamily.sansSemiBold,
+    fontSize: theme.fontSize.lg,
+    color: theme.colors.ink,
   },
 });
